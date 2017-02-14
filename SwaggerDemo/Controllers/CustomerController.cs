@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using SwaggerDemo.Models;
+using System.IO;
 
 namespace SwaggerDemo.Controllers
 {
@@ -13,7 +14,7 @@ namespace SwaggerDemo.Controllers
         // /api/customer/
         [HttpGet]
         [Route("api/customer")]
-        public Customer[] Get()
+        public Customer[] Get(string paramRequired, string paramOptional = null)
         {
             return new Customer[] 
             {
@@ -26,9 +27,21 @@ namespace SwaggerDemo.Controllers
         // /api/customer/
         [HttpPost]
         [Route("api/customer")]
-        public Customer Post(Customer c)
+        public HttpResponseMessage Post(Customer customer)
         {
-            return c;
+            HttpStatusCode httpStatusCode = HttpStatusCode.OK;
+            Uri location = null;
+            if (customer.id == 0)
+            {
+                httpStatusCode = HttpStatusCode.Created;
+                Random rand = new Random();
+                customer.id = (int)rand.Next(5, 100);
+                location = new Uri(Path.Combine(this.Request.RequestUri.AbsoluteUri, customer.id.ToString()));
+            }
+            HttpResponseMessage response = Request.CreateResponse(httpStatusCode, customer);
+            if (location != null)
+                response.Headers.Location = location;
+            return response;
         }
 
         // /api/customer/1
@@ -63,10 +76,22 @@ namespace SwaggerDemo.Controllers
         // /api/customer/1/orders
         [HttpPost]
         [Route("api/customer/{id}/order")]
-        public Order Orders(int id, Order order)
+        public HttpResponseMessage Orders(int id, Order order)
         {
+            HttpStatusCode httpStatusCode = HttpStatusCode.OK;
+            Uri location = null;
+            if (order.id == 0)
+            {
+                httpStatusCode = HttpStatusCode.Created;
+                Random rand = new Random();
+                order.id = (int)rand.Next(5, 100);
+                location = new Uri(Path.Combine(this.Request.RequestUri.AbsoluteUri, order.id.ToString()));
+            }
             order.idCust = id;
-            return order;
+            HttpResponseMessage response = Request.CreateResponse(httpStatusCode, order);
+            if (location != null)
+                response.Headers.Location = location;
+            return response;
         }
 
         // /api/customer/1/orders
@@ -93,11 +118,23 @@ namespace SwaggerDemo.Controllers
         // /api/customer/1/orders/3/shipments/1
         [HttpPost]
         [Route("api/customer/{id}/order/{actionid}/shipment")]
-        public Shipment Shipments(int id, int actionid, Shipment shipment)
+        public HttpResponseMessage Shipments(int id, int actionid, Shipment shipment)
         {
+            HttpStatusCode httpStatusCode = HttpStatusCode.OK;
+            Uri location = null;
+            if (shipment.id == 0)
+            {
+                httpStatusCode = HttpStatusCode.Created;
+                Random rand = new Random();
+                shipment.id = (int)rand.Next(5, 100);
+                location = new Uri(Path.Combine(this.Request.RequestUri.AbsoluteUri, shipment.id.ToString()));
+            }
             shipment.idCust = id;
             shipment.idOrder = actionid;
-            return shipment;
+            HttpResponseMessage response = Request.CreateResponse(httpStatusCode, shipment);
+            if (location != null)
+                response.Headers.Location = location;
+            return response;
         }
     }
 }
