@@ -2,8 +2,11 @@ using System.Web.Http;
 using WebActivatorEx;
 using SwaggerDemo;
 using Swashbuckle.Application;
+using System.Web.UI;
+using System.Reflection;
 
 [assembly: PreApplicationStartMethod(typeof(SwaggerConfig), "Register")]
+[assembly: WebResource("SwaggerDemo.TethrSwagger.css", "text/css")]
 
 namespace SwaggerDemo
 {
@@ -12,6 +15,8 @@ namespace SwaggerDemo
         public static void Register()
         {
             var thisAssembly = typeof(SwaggerConfig).Assembly;
+            var appAssembly = Assembly.GetExecutingAssembly();
+            var resourceName = "SwaggerDemo.Content.TethrSwagger.css";
 
             GlobalConfiguration.Configuration 
                 .EnableSwagger(c =>
@@ -32,7 +37,7 @@ namespace SwaggerDemo
                         // hold additional metadata for an API. Version and title are required but you can also provide
                         // additional fields by chaining methods off SingleApiVersion.
                         //
-                        c.SingleApiVersion("v1", "SwaggerDemo");
+                        c.SingleApiVersion("v1", "Tethr APIs");
 
                         // If your API has multiple versions, use "MultipleApiVersions" instead of "SingleApiVersion".
                         // In this case, you must provide a lambda that tells Swashbuckle which actions should be
@@ -175,6 +180,7 @@ namespace SwaggerDemo
                     })
                 .EnableSwaggerUi(c =>
                     {
+                        c.InjectStylesheet(appAssembly, resourceName);
                         // Use the "InjectStylesheet" option to enrich the UI with one or more additional CSS stylesheets.
                         // The file must be included in your project as an "Embedded Resource", and then the resource's
                         // "Logical Name" is passed to the method as shown below.

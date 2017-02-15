@@ -1,0 +1,28 @@
+﻿.swagger-section #header #logo {
+    font-size: 1.5em;
+    font-weight: bold;
+    text-decoration: none;
+    color: white;
+}
+.swagger-section #header #logo .logo__img {
+    display: block;
+    float: left;
+    margin-top: 2px;
+    margin-right: 12px;
+    content: url("/Content/TethrLogo.png");
+    width: 81px;
+    height: 25px;
+}
+.swagger-section #header #logo .logo__title {
+    display: inline-block;
+    padding: 5px 0 0 24px;
+    visibility: hidden;
+    position: relative;
+}
+.swagger-section #header #logo .logo__title:after {
+    visibility: visible;
+    position: absolute;
+    top: 4px;
+    left: 0;
+    content: "Tethr API";
+}

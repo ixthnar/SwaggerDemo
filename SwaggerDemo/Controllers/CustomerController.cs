@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Web.Http;
 using SwaggerDemo.Models;
 using System.IO;
+using System.Web.Http.Description;
 
 namespace SwaggerDemo.Controllers
 {
@@ -22,6 +23,14 @@ namespace SwaggerDemo.Controllers
                 new Customer { id = 2 },
                 new Customer { id = 3 }
             };
+        }
+
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [HttpGet]
+        [Route("api/secret")]
+        public string Secret()
+        {
+            return "very very secret";
         }
 
         // /api/customer/
