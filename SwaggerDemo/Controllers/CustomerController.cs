@@ -10,11 +10,23 @@ using System.Web.Http.Description;
 
 namespace SwaggerDemo.Controllers
 {
+    /// <summary>
+    /// SwaggerDemo example class
+    /// </summary>
     public class CustomerController : ApiController
     {
-        // /api/customer/
+
+        /// <summary>
+        /// Returns the entire, contant set of customers 
+        /// </summary>
+        /// <param name="paramRequired">Demonstrates required parameter</param>
+        /// <param name="paramOptional">Demonstrates optional parameter</param>
+        /// <returns>Demonstrate responses including 200 and 404</returns>
+        /// <response code="200">OK it is yours</response>
+        /// <response code="404">Not Found maybe</response>
         [HttpGet]
         [Route("api/customer")]
+        [ResponseType(typeof(Customer))]
         public Customer[] Get(string paramRequired, string paramOptional = null)
         {
             return new Customer[] 

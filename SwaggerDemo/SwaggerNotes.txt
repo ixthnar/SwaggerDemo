@@ -1,0 +1,21 @@
+﻿
+
+Documentation:
+	https://github.com/domaindrivendev/Swashbuckle
+	https://libraries.io/nuget/Swashbuckle/5.2.1
+
+Packages:
+	Swashbuckle 5.5.3 targetFramework=net452
+	Swashbuckle.Core 5.5.3 targetFramework=net452
+
+App_Start\SwaggerConfig.cs
+	Shows how to display Tethr logo instead of Swagger logo (TethrLogo.png, TethrSwagger.css)
+		[assembly: WebResource("SwaggerDemo.TethrSwagger.css", "text/css")]
+		var appAssembly = Assembly.GetExecutingAssembly();
+		var resourceName = "SwaggerDemo.Content.TethrSwagger.css";
+		c.InjectStylesheet(appAssembly, resourceName);
+
+		Project properties -> Build -> Output -> XML documentation file -> "bin\" <project> ".xml"
+
+Limitations
+	*
