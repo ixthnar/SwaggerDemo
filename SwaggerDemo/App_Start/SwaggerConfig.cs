@@ -2,6 +2,7 @@ using System.Web.Http;
 using WebActivatorEx;
 using SwaggerDemo;
 using Swashbuckle.Application;
+using System.Web.Routing;
 using System.Web.UI;
 using System.Reflection;
 using System;
@@ -19,11 +20,14 @@ namespace SwaggerDemo
         public static void Register()
         {
             GlobalConfiguration.Configuration 
-                .EnableSwagger(c =>
+                .EnableSwagger(
+                    "help/docs/{apiVersion}",
+                    c =>
                     {
                         //c.RootUrl(req => GetRootUrlFromAppConfig());
                         //c.Schemes(new[] { "http", "https" });
-                        c.SingleApiVersion("v1", "Tethr APIs");
+                        c.SingleApiVersion("v1", "Tethr APIs")
+                            .Description("Demonstrate Swashbuckler");
                         //c.MultipleApiVersions(
                         //    (apiDesc, targetApiVersion) => ResolveVersionSupportByRouteConstraint(apiDesc, targetApiVersion),
                         //    (vc) =>
@@ -45,10 +49,7 @@ namespace SwaggerDemo
                         //c.IgnoreObsoleteActions();
                         //c.GroupActionsBy(apiDesc => apiDesc.HttpMethod.ToString());
                         //c.OrderActionGroupsBy(new DescendingAlphabeticComparer());
-                        // Xml comments http://msdn.microsoft.com/en-us/library/b2s063f7(v=vs.110).aspx, you can incorporate
-                        // c.IncludeXmlComments(GetXmlCommentsPath())
                         c.IncludeXmlComments(GetDocumentationPath());
-                        // c.IncludeXmlComments(GetXmlCommentsPathForModels());
                         //c.MapType<ProductType>(() => new Schema { type = "integer", format = "int32" });
                         //c.SchemaFilter<ApplySchemaVendorExtensions>();
                         //c.UseFullTypeNameInSchemaIds();
@@ -61,7 +62,9 @@ namespace SwaggerDemo
                         //c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
                         //c.CustomProvider((defaultProvider) => new CachingSwaggerProvider(defaultProvider));
                     })
-                .EnableSwaggerUi(c =>
+                .EnableSwaggerUi(
+                    "help/ui/{*assetPath}",
+                    c =>
                     {
                         c.InjectStylesheet(Assembly.GetExecutingAssembly(), resourceName);
                         //c.InjectJavaScript(thisAssembly, "Swashbuckle.Dummy.SwaggerExtensions.testScript1.js");
@@ -77,11 +80,19 @@ namespace SwaggerDemo
                         //);
                         //c.EnableApiKeySupport("apiKey", "header");
                     });
+            GlobalConfiguration.Configuration.Routes.MapHttpRoute(
+                name: "help_ui_shortcut",
+                constraints: new RouteValueDictionary(){ { "uriResolution", new HttpRouteDirectionConstraint(allowedDirection: System.Web.Http.Routing.HttpRouteDirection.UriResolution) } },
+                defaults: new RouteValueDictionary(),
+                routeTemplate: "help",
+                handler: new RedirectHandler(SwaggerDocsConfig.DefaultRootUrlResolver, "help/ui/index"));
         }
 
         private static string GetDocumentationPath()
         {
-            return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"bin\SwaggerDemo.xml");
+            var commentsFileName = Assembly.GetExecutingAssembly().GetName().Name + ".xml";
+            var commentsFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "bin", commentsFileName);
+            return commentsFile;
         }
     }
 }
